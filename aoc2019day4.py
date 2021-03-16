@@ -1,5 +1,4 @@
 import re
-from functools import reduce
 
 my_input = list(map(lambda a: int(a), re.findall(r'\d+', '256310-732736')))
 
