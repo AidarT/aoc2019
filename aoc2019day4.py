@@ -1,6 +1,4 @@
-import re
-
-my_input = list(map(lambda a: int(a), re.findall(r'\d+', '256310-732736')))
+my_input = list(map(lambda a: int(a), '256310-732736'.split('-')))
 
 passwords_p1 = set()
 passwords_p2 = set()
