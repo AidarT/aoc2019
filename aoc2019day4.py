@@ -19,11 +19,10 @@ for num in range(my_input[0], my_input[1] + 1, 1):
         key = False
     if key:
         passwords_p1.add(num)
-        if same_count.__len__() >= 2:
-            for dig in same_count:
-                if same_count.count(dig) == 2:
-                    passwords_p2.add(num)
-                    break
+        for dig in same_count:
+            if same_count.count(dig) == 2:
+                passwords_p2.add(num)
+                break
 
 part1 = passwords_p1.__len__()
 part2 = passwords_p2.__len__()
