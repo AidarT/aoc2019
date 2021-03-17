@@ -30,12 +30,8 @@ def output_calc(us_input, inp_val):
         elif us_input[i] == 99:
             break
         else:
-            if str(us_input[i]).__len__() > 3:
-                B = int(str(us_input[i])[0])
-                C = int(str(us_input[i])[1])
-            elif str(us_input[i]).__len__() > 2:
-                B = 0
-                C = int(str(us_input[i])[0])
+            B = int(str(us_input[i])[0]) if str(us_input[i]).__len__() > 3 else 0
+            C = int(str(us_input[i])[1]) if str(us_input[i]).__len__() > 3 else int(str(us_input[i])[0])
             optcode = int(str(us_input[i])[str(us_input[i]).__len__() - 2]
                         + str(us_input[i])[str(us_input[i]).__len__() - 1])
             i, inp_val = instr_cmd(optcode, us_input, i, inp_val, B, C)
