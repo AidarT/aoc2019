@@ -1,3 +1,6 @@
+from math import floor
+
+
 def findAllComb(array, new_arr, base, level):
     if level < array.__len__() - 1:
         for memb in array:
@@ -14,27 +17,32 @@ def findAllComb(array, new_arr, base, level):
     return new_arr
 
 
+def param_calc(us_input, i, mode):
+    if mode == 1:
+        param = us_input[i]
+    else:
+        param = us_input[us_input[i]] if us_input[i] in us_input else 0
+    return param
+
+
 def instr_cmd(optcode, us_input, i, inp_val, B, C):
     if optcode <= 2 or optcode >= 7:
-        param1 = us_input[i + 1] if C else us_input[us_input[i + 1]]
-        param2 = us_input[i + 2] if B else us_input[us_input[i + 2]]
+        param1 = param_calc(us_input, i + 1, C)
+        param2 = param_calc(us_input, i + 2, B)
         us_input[us_input[i + 3]] = (param1 + param2 if optcode == 1 else param1 * param2) * (1 if optcode <= 2 else 0) \
-                                   + (1 if param1 < param2 else 0) * (1 if optcode == 7 else 0) \
-                                    + (1 if param1 == param2 else 0) * (1 if optcode == 8 else 0)
+                         + (1 if param1 < param2 else 0) * (1 if optcode == 7 else 0) \
+                         + (1 if param1 == param2 else 0) * (1 if optcode == 8 else 0)
     elif optcode == 3:
-        if C:
-            us_input[i + 1] = inp_val
-        else:
-            us_input[us_input[i + 1]] = inp_val
+        us_input[us_input[i + 1]] = inp_val
     elif optcode == 4:
-        inp_val = us_input[i + 1] if C else us_input[us_input[i + 1]]
+        inp_val = param_calc(us_input, i + 1, C)
     if 5 <= optcode <= 6:
-        param1 = us_input[i + 1] if C else us_input[us_input[i + 1]]
-        param2 = us_input[i + 2] if B else us_input[us_input[i + 2]]
+        param1 = param_calc(us_input, i + 1, C)
+        param2 = param_calc(us_input, i + 2, B)
         i = (param2 if param1 != 0 else i + 3) * (1 if optcode == 5 else 0) \
             + (param2 if param1 == 0 else i + 3) * (1 if optcode == 6 else 0)
     else:
-        i = i + 4 if optcode <= 2 or optcode >= 7 else i + 2
+        i = i + 4 if optcode <= 2 or (7 <= optcode <= 8) else i + 2
     return i, inp_val
 
 
@@ -42,27 +50,33 @@ def output_calc(us_input, inp_val, phase, feedback_on):
     i = 0; inp_iter = 0; inp_val_temp = inp_val
     while i < us_input.__len__():
         if us_input[i] < 99:
-            if us_input[i] == 3 or (feedback_on and us_input[i] == 4):
+            # if us_input[i] == 3 or (feedback_on and us_input[i] == 4):
+            if us_input[i] == 3:
                 inp_iter += 1
+            if inp_iter > 2 and feedback_on:
+                break
             if inp_iter == 1:
                 i, inp_val = instr_cmd(us_input[i], us_input, i, phase, 0, 0)
             elif inp_iter == 2:
                 i, inp_val = instr_cmd(us_input[i], us_input, i, inp_val_temp, 0, 0)
+                inp_val_temp = inp_val
             else:
                 i, inp_val = instr_cmd(us_input[i], us_input, i, inp_val, 0, 0)
         elif us_input[i] == 99:
             break
         else:
-            B = int(str(us_input[i])[0]) if str(us_input[i]).__len__() > 3 else 0
-            C = int(str(us_input[i])[1]) if str(us_input[i]).__len__() > 3 else int(str(us_input[i])[0])
-            optcode = int(str(us_input[i])[str(us_input[i]).__len__() - 2]
-                        + str(us_input[i])[str(us_input[i]).__len__() - 1])
-            if optcode == 3 or (feedback_on and optcode == 4):
+            B = floor(us_input[i] / 1000) % 10
+            C = floor(us_input[i] / 100) % 10
+            optcode = us_input[i] % 100
+            if optcode == 3:
                 inp_iter += 1
+            if inp_iter > 2 and feedback_on:
+                break
             if inp_iter == 1:
                 i, inp_val = instr_cmd(optcode, us_input, i, phase, B, C)
             elif inp_iter == 2:
                 i, inp_val = instr_cmd(optcode, us_input, i, inp_val_temp, B, C)
+                inp_val_temp = inp_val
             else:
                 i, inp_val = instr_cmd(optcode, us_input, i, inp_val, B, C)
     return inp_val
