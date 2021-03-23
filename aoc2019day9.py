@@ -1,3 +1,6 @@
+from math import floor
+
+
 def param_calc(us_input, i, rel_base, mode):
     if mode == 1:
         param = us_input[i]
@@ -8,7 +11,7 @@ def param_calc(us_input, i, rel_base, mode):
     return param
 
 
-def instr_cmd(optcode, us_input, i, inp_val, B, C, rel_base):
+def instr_cmd(optcode, us_input, i, inp_val, A, B, C, rel_base):
     if optcode == 9:
         if C == 1:
             rel_base = rel_base + us_input[i + 1]
@@ -20,13 +23,12 @@ def instr_cmd(optcode, us_input, i, inp_val, B, C, rel_base):
     elif optcode <= 2 or optcode >= 7:
         param1 = param_calc(us_input, i + 1, rel_base, C)
         param2 = param_calc(us_input, i + 2, rel_base, B)
-        us_input[us_input[i + 3]] = (param1 + param2 if optcode == 1 else param1 * param2) * (1 if optcode <= 2 else 0) \
+        addr = us_input[i + 3] + rel_base if A == 2 else us_input[i + 3]
+        us_input[addr] = (param1 + param2 if optcode == 1 else param1 * param2) * (1 if optcode <= 2 else 0) \
                                    + (1 if param1 < param2 else 0) * (1 if optcode == 7 else 0) \
                                     + (1 if param1 == param2 else 0) * (1 if optcode == 8 else 0)
     elif optcode == 3:
-        if C == 1:
-            us_input[i + 1] = inp_val
-        elif C == 2:
+        if C == 2:
             us_input[us_input[i + 1] + rel_base] = inp_val
         else:
             us_input[us_input[i + 1]] = inp_val
@@ -46,15 +48,15 @@ def output_calc(us_input, inp_val):
     i = 0; rel_base = 0
     while i < us_input.__len__():
         if us_input[i] < 99:
-            i, inp_val, rel_base = instr_cmd(us_input[i], us_input, i, inp_val, 0, 0, rel_base)
+            i, inp_val, rel_base = instr_cmd(us_input[i], us_input, i, inp_val, 0, 0, 0, rel_base)
         elif us_input[i] == 99:
             break
         else:
-            B = int(str(us_input[i])[0]) if str(us_input[i]).__len__() > 3 else 0
-            C = int(str(us_input[i])[1]) if str(us_input[i]).__len__() > 3 else int(str(us_input[i])[0])
-            optcode = int(str(us_input[i])[str(us_input[i]).__len__() - 2]
-                        + str(us_input[i])[str(us_input[i]).__len__() - 1])
-            i, inp_val, rel_base = instr_cmd(optcode, us_input, i, inp_val, B, C, rel_base)
+            A = floor(us_input[i] / 10000) % 10
+            B = floor(us_input[i] / 1000) % 10
+            C = floor(us_input[i] / 100) % 10
+            optcode = us_input[i] % 100
+            i, inp_val, rel_base = instr_cmd(optcode, us_input, i, inp_val, A, B, C, rel_base)
     return inp_val
 
 
@@ -67,6 +69,6 @@ my_input_orig = my_input.copy()
 part1 = output_calc(my_input, 1)
 
 my_input = my_input_orig.copy()
-part2 = output_calc(my_input, 5)
+part2 = output_calc(my_input, 2)
 
 print(str(part1) + " " + str(part2))
