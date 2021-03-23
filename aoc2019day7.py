@@ -18,11 +18,7 @@ def findAllComb(array, new_arr, base, level):
 
 
 def param_calc(us_input, i, mode):
-    if mode == 1:
-        param = us_input[i]
-    else:
-        param = us_input[us_input[i]] if us_input[i] in us_input else 0
-    return param
+    return us_input[us_input[i]] if mode == 0 else us_input[i]
 
 
 def instr_cmd(optcode, us_input, i, inp_val, B, C):
