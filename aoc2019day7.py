@@ -46,11 +46,10 @@ def instr_cmd(optcode, us_input, i, inp_val, B, C):
     return i, inp_val
 
 
-def output_calc(us_input, inp_val, phase, feedback_on):
-    i = 0; inp_iter = 0; inp_val_temp = inp_val
+def output_calc(us_input, inp_val, phase, feedback_on, inp_iter, i):
+    inp_val_temp = inp_val; halt = 0
     while i < us_input.__len__():
         if us_input[i] < 99:
-            # if us_input[i] == 3 or (feedback_on and us_input[i] == 4):
             if us_input[i] == 3:
                 inp_iter += 1
             if inp_iter > 2 and feedback_on:
@@ -63,6 +62,7 @@ def output_calc(us_input, inp_val, phase, feedback_on):
             else:
                 i, inp_val = instr_cmd(us_input[i], us_input, i, inp_val, 0, 0)
         elif us_input[i] == 99:
+            halt = 1
             break
         else:
             B = floor(us_input[i] / 1000) % 10
@@ -79,7 +79,7 @@ def output_calc(us_input, inp_val, phase, feedback_on):
                 inp_val_temp = inp_val
             else:
                 i, inp_val = instr_cmd(optcode, us_input, i, inp_val, B, C)
-    return inp_val
+    return inp_val, halt, inp_iter, i
 
 
 with open('C:/Users/User/Documents/input.txt') as f:
@@ -93,20 +93,25 @@ comb_arr = findAllComb(phases, [], [], 0)
 for comb in comb_arr:
     thrusters = 0
     for phase in comb:
-        thrusters = output_calc(my_input, thrusters, phase, 0)
+        thrusters = output_calc(my_input, thrusters, phase, 0, 0, 0)[0]
         my_input = my_input_orig.copy()
     if thrusters > part1:
         part1 = thrusters
 
 phases = [5, 6, 7, 8, 9]
-phases = [9, 8, 7, 6, 5]
 part2 = 0
 comb_arr = findAllComb(phases, [], [], 0)
 
 for comb in comb_arr:
-    thrusters = 0
-    for phase in comb:
-        thrusters = output_calc(my_input, thrusters, phase, 1)
+    hw = [my_input_orig.copy(), my_input_orig.copy(), my_input_orig.copy(), my_input_orig.copy(), my_input_orig.copy()]
+    thrusters = 0; halted = [0, 0, 0, 0, 0]; inp_iter = [0, 0, 0, 0, 0]; i = [0, 0, 0, 0, 0]
+    while not halted[len(halted) - 1]:
+        for phase in comb:
+            if not halted[comb.index(phase)]:
+                thrusters, halted[comb.index(phase)], inp_iter[comb.index(phase)], i[comb.index(phase)] = \
+                    output_calc(hw[comb.index(phase)], thrusters, phase, 1, inp_iter[comb.index(phase)],
+                                i[comb.index(phase)])
+                inp_iter[comb.index(phase)] = 1
     if thrusters > part2:
         part2 = thrusters
 
