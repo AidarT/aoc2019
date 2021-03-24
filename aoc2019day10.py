@@ -1,6 +1,7 @@
 from functools import reduce
 import math
 
+
 def sign(num):
     if num == 0:
         return 0
@@ -59,6 +60,19 @@ for y in range(0, len(my_input)):
                     checkUpDown(j, x, y, my_input, catches)
 part1 = reduce(lambda prev, cur: len(catches[cur]) if len(catches[cur]) > prev else prev, catches, 0)
 
-part2 = 0
+x0, y0 = reduce(lambda prev, cur: cur if len(catches[cur]) > len(catches[prev]) else prev, catches)
+part2 = catches[x0, y0]
+circle = {}
+for catch in part2:
+    x_dif, y_dif = part2[catch]
+    angle = math.atan2(-x_dif, y_dif)
+    angle = angle + math.pi * 2 if angle < 0 else angle
+    if angle not in circle:
+        circle[angle] = catch
+    else:
+        circle[angle] = circle[angle], catch
+circle = {k: v for k, v in sorted(circle.items(), key=lambda item: item[0])}
+part2 = [v for k, v in circle.items()][199]
+part2 = part2[0] * 100 + part2[1]
 
 print(str(part1) + " " + str(part2))
