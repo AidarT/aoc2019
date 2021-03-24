@@ -68,8 +68,7 @@ for catch in part2:
     angle = math.atan2(-x_dif, y_dif)
     angle = angle + math.pi * 2 if angle < 0 else angle
     circle[angle] = catch
-circle = {k: v for k, v in sorted(circle.items(), key=lambda item: item[0])}
-part2 = [v for k, v in circle.items()][199]
+part2 = [v for k, v in sorted(circle.items(), key=lambda item: item[0])][199]
 part2 = part2[0] * 100 + part2[1]
 
 print(str(part1) + " " + str(part2))
