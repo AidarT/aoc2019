@@ -35,8 +35,7 @@ with open('C:/Users/User/Documents/input.txt') as f:
     my_input = f.read().split('\n')
 f.close()
 
-catches = {};
-errors = 0
+catches = {}
 for y in range(0, len(my_input)):
     for x in range(0, len(my_input[0])):
         if my_input[y][x] == '#':
@@ -46,7 +45,7 @@ for y in range(0, len(my_input)):
                     if my_input[y].index('#', x + 1) > 0:
                         catches[x, y][my_input[y].index('#', x + 1), y] = x - my_input[y].index('#', x + 1), 0
                 except:
-                    errors += 1
+                    continue
             if x - 1 >= 0:
                 for i in range(x - 1, -1, -1):
                     if my_input[y][i] == '#':
