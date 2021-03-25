@@ -65,9 +65,7 @@ def newPosAndDir(pos, dir, angle):
 def output_calc(us_input, inp_val):
     i = 0; rel_base = 0; outp_val = []; panels = {}; pos = [0, 0]; dir = 0; halt = False
     while i < us_input.__len__():
-        if us_input[i] < 99:
-            i, inp_val, rel_base, halt = instr_cmd(us_input[i], us_input, i, inp_val, outp_val, 0, 0, 0, rel_base, halt)
-        elif us_input[i] == 99:
+        if us_input[i] == 99:
             break
         else:
             A = floor(us_input[i] / 10000) % 10
