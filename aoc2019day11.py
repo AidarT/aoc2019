@@ -51,19 +51,14 @@ def instr_cmd(optcode, us_input, i, inp_val, outp_val, A, B, C, rel_base, halt):
 
 
 def newPosAndDir(pos, dir, angle):
+    dirs = {0: [0, 1], 90: [1, 0], 180: [0, -1], 270: [-1, 0]}
     dir = dir + 90 * (2 * angle - 1)
     if dir < 0:
         dir += 360
     elif dir > 270:
         dir -= 360
-    if dir == 0:
-        pos[1] += 1
-    elif dir == 90:
-        pos[0] += 1
-    elif dir == 180:
-        pos[1] -= 1
-    elif dir == 270:
-        pos[0] -= 1
+    pos[0] += dirs[dir][0]
+    pos[1] += dirs[dir][1]
     return pos, dir
 
 
