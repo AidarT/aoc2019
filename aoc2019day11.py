@@ -87,11 +87,9 @@ with open('C:/Users/User/Documents/input.txt') as f:
 f.close()
 
 my_input = {i: my_input[i] for i in range(0, len(my_input))}
-my_input_orig = my_input.copy()
-part1 = len(output_calc(my_input, [0]))
+part1 = len(output_calc(my_input.copy(), [0]))
 
-my_input = my_input_orig.copy()
-part2 = output_calc(my_input, [1])
+part2 = output_calc(my_input.copy(), [1])
 coords = [k for k, v in sorted(part2.items(), key=lambda item: item[0])]
 maxs = reduce(lambda prev, cur: [cur[0] if cur[0] > prev[0] else prev[0], cur[1] if cur[1] > prev[1] else prev[1]], coords, [0, 0])
 mins = reduce(lambda prev, cur: [cur[0] if cur[0] < prev[0] else prev[0], cur[1] if cur[1] < prev[1] else prev[1]], coords, [0, 0])
