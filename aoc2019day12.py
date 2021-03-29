@@ -37,8 +37,6 @@ states.add((', ').join(map(str, position)).replace('[', '').replace(']', '') +
 while True:
     part2 += 1
     sim_cycle(position, velocity)
-    if part2 == 4686774924:
-        tmp = 1
     saved = (', ').join(map(str, position)).replace('[', '').replace(']', '') + \
             (', ').join(map(str, velocity)).replace('[', '').replace(']', '')
     if saved in states:
