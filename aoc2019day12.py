@@ -4,17 +4,17 @@ import copy
 
 
 def sim_cycle(position, velocity):
-    for moon in position:
+    for moon in enumerate(position):
         for paired in position:
-            if moon != paired:
+            if moon[1] != paired:
                 for i in range(0, 3, 1):
-                    if moon[i] < paired[i]:
-                        velocity[position.index(moon)][i] += 1
-                    elif moon[i] > paired[i]:
-                        velocity[position.index(moon)][i] -= 1
-    for moon in position:
+                    if position[moon[0]][i] < paired[i]:
+                        velocity[moon[0]][i] += 1
+                    elif position[moon[0]][i] > paired[i]:
+                        velocity[moon[0]][i] -= 1
+    for moon in enumerate(position):
         for i in range(0, 3, 1):
-            moon[i] += velocity[position.index(moon)][i]
+            position[moon[0]][i] += velocity[moon[0]][i]
 
 
 with open('C:/Users/User/Documents/input.txt') as f:
