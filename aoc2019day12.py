@@ -3,6 +3,11 @@ import re
 import copy
 
 
+def lcm(a, b):
+    import math
+    return (a * b) // math.gcd(a, b)
+
+
 def sim_cycle(position, velocity):
     for moon in enumerate(position):
         for paired in position:
@@ -30,18 +35,23 @@ part1 = reduce(lambda prev, cur: prev + (abs(cur[0]) + abs(cur[1]) + abs(cur[2])
                 (abs(velocity[position.index(cur)][0]) + abs(velocity[position.index(cur)][1]) +
                  abs(velocity[position.index(cur)][2])), position, 0)
 
-position = copy.deepcopy(pos_orig); velocity = copy.deepcopy(vel_orig)
-part2 = 0; states = set()
-states.add((', ').join(map(str, position)).replace('[', '').replace(']', '') +
-           (', ').join(map(str, velocity)).replace('[', '').replace(']', ''))
-while True:
-    part2 += 1
-    sim_cycle(position, velocity)
-    saved = (', ').join(map(str, position)).replace('[', '').replace(']', '') + \
-            (', ').join(map(str, velocity)).replace('[', '').replace(']', '')
-    if saved in states:
-        break
-    else:
-        states.add(saved)
+dimensions = []
+for i in range(0, 3, 1):
+    position = copy.deepcopy(pos_orig); velocity = copy.deepcopy(vel_orig)
+    part2 = 0; states = set()
+    while True:
+        saved = reduce(lambda prev, cur: prev + str(cur[i]) + ", ", position, "")
+        saved += reduce(lambda prev, cur: prev + str(cur[i]) + ", ", velocity, "")
+        saved = saved[:-2]
+        if saved in states:
+            dimensions.append(part2)
+            break
+        else:
+            states.add(saved)
+        part2 += 1
+        sim_cycle(position, velocity)
+
+part2 = lcm(dimensions[0], dimensions[1])
+part2 = lcm(part2, dimensions[2])
 
 print(str(part1) + " " + str(part2))
