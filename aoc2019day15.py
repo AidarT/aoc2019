@@ -135,7 +135,7 @@ part1 = intcode(my_input.copy(), [])
 
 map = {(0, 0): 'O'}
 key = True; amount = 1
-for i in range(1 ,5, 1):
+for i in range(1, 5, 1):
     wallCheck, key, amount = mapBuild(part1, i, (0, 0), map, key, amount)
     if wallCheck != 0:
         part1.input.append(backMoves[i])
@@ -159,7 +159,7 @@ for line in pic:
 start = list(filter(lambda elem: elem[1] == 'X', map.items()))[0][0]
 oxygenMap = {start: 0}
 part2 = 0
-for i in range(1 ,5, 1):
+for i in range(1, 5, 1):
     part2 = oxygenCalc(i, start, map, 0, oxygenMap, part2)
 
 print(str(amount) + " " + str(part2))
