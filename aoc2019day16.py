@@ -13,8 +13,7 @@ def calcFFTphase(input):
                 pat *= -1
                 i = i + (ind + 1)
             i += 1
-        newVal = abs(newVal) % 10
-        newInput[ind] = newVal
+        newInput[ind] = abs(newVal) % 10
     return newInput
 
 
