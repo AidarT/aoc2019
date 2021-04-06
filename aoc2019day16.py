@@ -10,7 +10,7 @@ def calcFFTphase(input):
             iter += 1
             if iter >= ind + 1:
                 iter = 0
-                pat = -1 if pat == 1 else 1
+                pat *= -1
                 i = i + (ind + 1)
             i += 1
         newVal = abs(newVal) % 10
