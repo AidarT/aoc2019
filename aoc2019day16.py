@@ -7,8 +7,7 @@ pattern = [0, 1, 0, -1]
 def calcFFTphase(input):
     newInput = input.copy()
     for ind in range(0, len(input), 1):
-        newVal = 0; i_pat = 1; iter = 0
-        i = ind
+        newVal = 0; i_pat = 1; iter = 0; i = ind
         while i < len(input):
             newVal += input[i] * pattern[i_pat]
             iter += 1
@@ -16,8 +15,6 @@ def calcFFTphase(input):
                 iter = 0
                 i_pat = i_pat + 2 if i_pat + 2 < len(pattern) else 1
                 i = i + (ind + 1)
-                if i >= len(input):
-                    break
             i += 1
         newVal = abs(newVal) % 10
         newInput[ind] = newVal
@@ -33,7 +30,7 @@ offset = int(('').join(map(str, my_input[0: 7])))
 my_input = {i: my_input[i] for i in range(0, len(my_input))}
 
 for i in range(0, 100, 1):
-    my_input = calcFFTphase(my_input.copy())
+    my_input = calcFFTphase(my_input)
 
 part1 = int(('').join(map(str, [my_input[0], my_input[1], my_input[2], my_input[3], my_input[4], my_input[5],
                                my_input[6], my_input[7]])))
@@ -42,7 +39,7 @@ my_input = orig_input.copy()
 my_input = {i: my_input[i % len(my_input)] for i in range(0, len(my_input) * 10000)}
 
 for i in range(0, 100, 1):
-    my_input = calcFFTphase(my_input.copy())
+    my_input = calcFFTphase(my_input)
 
 part2 = int(''.join(map(str, [my_input[offset % len(my_input)], my_input[(offset + 1) % len(my_input)],
                               my_input[(offset + 2) % len(my_input)], my_input[(offset + 3) % len(my_input)],
