@@ -97,7 +97,7 @@ for j, line in enumerate(pic):
                     and pic[j - 1][i] == '#' and pic[j + 1][i] == '#':
                 pic[j][i] = 'O'
                 amount += j * i
-    print(('').join(line[1]))
+    print(('').join(line))
 
 
 coords = [k for k, v in sorted(map.items(), key=lambda item: item[0])]
