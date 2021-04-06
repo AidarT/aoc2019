@@ -78,7 +78,7 @@ class intcode:
 
 moves = {1: (0, 1), 2: (0, -1), 3: (1, 0), 4: (-1, 0)}
 
-with open('C:/Users/Hazard/Documents/input.txt') as f:
+with open('C:/Users/User/Documents/input.txt') as f:
     my_input = list(map(lambda a: int(a), f.read().split(',')))
 f.close()
 
@@ -90,13 +90,13 @@ while part1.run:
 
 amount = 0
 pic = list(map(lambda line: [char for char in line], ('').join([chr(i) for i in part1.output]).split('\n')))
-for line in enumerate(pic):
-    for ch in enumerate(line[1]):
-        if line[0] - 1 >= 0 and line[0] + 1 < len(pic) and ch[0] - 1 >= 0 and ch[0] + 1 < len(line[1]):
-            if ch[1] == '#' and line[1][ch[0] - 1] == '#' and line[1][ch[0] + 1] == '#' \
-                    and pic[line[0] - 1][ch[0]] == '#' and pic[line[0] + 1][ch[0]] == '#':
-                pic[line[0]][ch[0]] = 'O'
-                amount += line[0] * ch[0]
+for j, line in enumerate(pic):
+    for i, ch in enumerate(line):
+        if j - 1 >= 0 and j + 1 < len(pic) and i - 1 >= 0 and i + 1 < len(line):
+            if ch == '#' and pic[j][i - 1] == '#' and pic[j][i + 1] == '#' \
+                    and pic[j - 1][i] == '#' and pic[j + 1][i] == '#':
+                pic[j][i] = 'O'
+                amount += j * i
     print(('').join(line[1]))
 
 
