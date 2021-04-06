@@ -1,25 +1,26 @@
-import math
-from functools import reduce
 import re
-import itertools
+from functools import reduce
 
-
-def newPattern(elNum):
-    pattern = [0, 1, 0, -1]
-    newPattern = list(itertools.chain.from_iterable(itertools.repeat(a, elNum) for a in pattern))
-    return newPattern
+pattern = [0, 1, 0, -1]
 
 
 def calcFFTphase(input):
     newInput = input.copy()
-    for ind in enumerate(input):
-        pattern = newPattern(ind[0] + 1)
-        newVal = 0; i_pat = 1
-        for num in input:
-            newVal += num * pattern[i_pat]
-            i_pat = i_pat + 1 if i_pat + 1 < len(pattern) else 0
+    for ind in range(0, len(input), 1):
+        newVal = 0; i_pat = 1; iter = 0
+        i = ind
+        while i < len(input):
+            newVal += input[i] * pattern[i_pat]
+            iter += 1
+            if iter >= ind + 1:
+                iter = 0
+                i_pat = i_pat + 2 if i_pat + 2 < len(pattern) else 1
+                i = i + (ind + 1)
+                if i >= len(input):
+                    break
+            i += 1
         newVal = abs(newVal) % 10
-        newInput[ind[0]] = newVal
+        newInput[ind] = newVal
     return newInput
 
 
@@ -27,11 +28,25 @@ with open('C:/Users/User/Documents/input.txt') as f:
     my_input = list(map(lambda a: int(a), re.findall(r'-?\d', f.read())))
 f.close()
 
+orig_input = my_input.copy()
+offset = int(('').join(map(str, my_input[0: 7])))
+my_input = {i: my_input[i] for i in range(0, len(my_input))}
+
 for i in range(0, 100, 1):
     my_input = calcFFTphase(my_input.copy())
 
-part1 = int(''.join(map(str, my_input[0: 8])))
+part1 = int(('').join(map(str, [my_input[0], my_input[1], my_input[2], my_input[3], my_input[4], my_input[5],
+                               my_input[6], my_input[7]])))
 
-part2 = 0
+my_input = orig_input.copy()
+my_input = {i: my_input[i % len(my_input)] for i in range(0, len(my_input) * 10000)}
+
+for i in range(0, 100, 1):
+    my_input = calcFFTphase(my_input.copy())
+
+part2 = int(''.join(map(str, [my_input[offset % len(my_input)], my_input[(offset + 1) % len(my_input)],
+                              my_input[(offset + 2) % len(my_input)], my_input[(offset + 3) % len(my_input)],
+                              my_input[(offset + 4) % len(my_input)], my_input[(offset + 5) % len(my_input)],
+                              my_input[(offset + 6) % len(my_input)], my_input[(offset + 7) % len(my_input)]])))
 
 print(str(part1) + " " + str(part2))
