@@ -1,19 +1,16 @@
 import re
-from functools import reduce
-
-pattern = [0, 1, 0, -1]
 
 
 def calcFFTphase(input):
     newInput = input.copy()
     for ind in range(0, len(input), 1):
-        newVal = 0; i_pat = 1; iter = 0; i = ind
+        newVal = 0; pat = 1; iter = 0; i = ind
         while i < len(input):
-            newVal += input[i] * pattern[i_pat]
+            newVal += input[i] * pat
             iter += 1
             if iter >= ind + 1:
                 iter = 0
-                i_pat = i_pat + 2 if i_pat + 2 < len(pattern) else 1
+                pat = -1 if pat == 1 else 1
                 i = i + (ind + 1)
             i += 1
         newVal = abs(newVal) % 10
