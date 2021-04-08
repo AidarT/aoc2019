@@ -146,7 +146,8 @@ def functionsCalc(candidates, path_str):
                 for cand3 in candidates:
                     if cand3 != cand1 and cand3 != cand2:
                         check = path_str
-                        functions = sorted([cand1, cand2, cand3])
+                        functions = [cand1, cand2, cand3]
+                        functions.sort(key=lambda func: len(func))
                         for cand in functions:
                             check = check.replace(cand, '').replace(',,', ',').replace(',,', ',')
                         if check[0] == ",":
