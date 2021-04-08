@@ -76,6 +76,19 @@ class intcode:
                 break
 
 
+def picPrint(pic):
+    part1 = 0
+    for j, line in enumerate(pic):
+        for i, ch in enumerate(line):
+            if j - 1 >= 0 and j + 1 < len(pic) and i - 1 >= 0 and i + 1 < len(line):
+                if ch == '#' and pic[j][i - 1] == '#' and pic[j][i + 1] == '#' \
+                        and pic[j - 1][i] == '#' and pic[j + 1][i] == '#':
+                    pic[j][i] = 'O'
+                    part1 += j * i
+        print(('').join(line))
+    return part1
+
+
 start_dirs = {"v": 1, "^": 2, ">": 3, "<": 4}
 dirs = {1: "D", 2: "U", 3: "R", 4: "L"}
 moves = {1: (0, 1), 2: (0, -1), 3: (1, 0), 4: (-1, 0)}
@@ -116,6 +129,33 @@ def fullPathCalc(move, cur_coord, map, amount, path, dir):
                     fullPathCalc(move, cur_coord, map, amount, path, dir)
 
 
+def candidatesCalc(candidates, path_str, path):
+    for j in range(0, len(path), 2):
+        to_find = (',').join(list(map(str, [path[j], path[j + 1]])))
+        for i in range(j + 2, len(path), 2):
+            to_find += ',' + (',').join(list(map(str, [path[i], path[i + 1]])))
+            amount = len(path_str.split(to_find)) - 1
+            if amount > 1:
+                candidates[to_find] = amount
+
+
+def functionsCalc(candidates, path_str):
+    for cand1 in candidates:
+        for cand2 in candidates:
+            if cand1 != cand2:
+                for cand3 in candidates:
+                    if cand3 != cand1 and cand3 != cand2:
+                        check = path_str
+                        functions = sorted([cand1, cand2, cand3])
+                        for cand in functions:
+                            check = check.replace(cand, '').replace(',,', ',').replace(',,', ',')
+                        if check[0] == ",":
+                            check = check[1:]
+                        if check == "":
+                            return functions
+    return 0
+
+
 with open('C:/Users/User/Documents/input.txt') as f:
     my_input = list(map(lambda a: int(a), f.read().split(',')))
 f.close()
@@ -125,16 +165,8 @@ robot = intcode(my_input.copy(), [])
 while robot.run:
         robot.output_calc()
 
-part1 = 0
 pic = list(map(lambda line: [char for char in line], ('').join([chr(i) for i in robot.output]).split('\n')))
-for j, line in enumerate(pic):
-    for i, ch in enumerate(line):
-        if j - 1 >= 0 and j + 1 < len(pic) and i - 1 >= 0 and i + 1 < len(line):
-            if ch == '#' and pic[j][i - 1] == '#' and pic[j][i + 1] == '#' \
-                    and pic[j - 1][i] == '#' and pic[j + 1][i] == '#':
-                pic[j][i] = 'O'
-                part1 += j * i
-    print(('').join(line))
+part1 = picPrint(pic)
 
 us_map = {(x, y): v for y, line in enumerate(pic) for x, v in enumerate(line)}
 start = reduce(lambda prev, cur: cur[0] if cur[1] == "^" or cur[1] == ">" or cur[1] == "<" or cur[1] == "v"
@@ -147,39 +179,15 @@ for i in range(1, 5, 1):
         break
 fullPathCalc(start_move, start, us_map, 0, path, start_dirs[us_map[start]])
 
-
-def candidatesFound(to_find, ind, path, depth, candidates):
-    for i in range(ind + 2, len(path), 2):
-        to_find += ',' + (',').join(list(map(str, [path[i], path[i + 1]])))
-        amount = len((',').join(list(map(str, path))).split(to_find)) - 1
-        if amount > 1 and depth < 3 and i + 3 < len(path):
-            candidates[to_find] = amount
-            new_path = path_str.replace(to_find, '').replace(',,', ',')
-            if new_path[0] == ",":
-                new_path = new_path[1:]
-            to_find_new = (',').join(list(map(str, [path[i + 2], path[i + 3]])))
-            candidatesFound(to_find_new, ind, new_path.split(','), depth + 1, candidates)
-        else:
-            new_path = path_str
-            for j in range(0, 4, 1):
-                new_path = new_path.replace(to_find, '').replace(',,', ',')
-                if new_path[0] == ",":
-                    new_path = new_path[1:]
-
-
 candidates = {}
 path_str = (',').join(list(map(str, path)))
-# for j in range(0, len(path), 2):
-#     to_find = (',').join(list(map(str, [path[j], path[j + 1]])))
-#     for i in range(j + 2, len(path), 2):
-#         to_find += ',' + (',').join(list(map(str, [path[i], path[i + 1]])))
-#         amount = len(path_str.split(to_find)) - 1
-#         if amount > 1:
-#             candidates[to_find] = amount
+candidatesCalc(candidates, path_str, path)
 
-for j in range(0, len(path), 2):
-    to_find = (',').join(list(map(str, [path[j], path[j + 1]])))
-    candidates = candidatesFound(to_find, j, path, 0, candidates)
+functions = functionsCalc(candidates, path_str)
+functions = {functions[k[0]]: k[1] for k in enumerate(['A', 'B', 'C'])}
+
+main_routine = []
+
 
 my_input[0] = 2
 robot = intcode(my_input.copy(), [])
