@@ -156,6 +156,35 @@ def functionsCalc(candidates, path_str):
     return 0
 
 
+def calcMainRoutine(functions, path_str):
+    main_routine = []
+    while path_str != "":
+        for func in functions:
+            ind = path_str.find(func)
+            if ind == 0:
+                path_str = path_str[len(func) + 1:]
+                main_routine.append(functions[func])
+                break
+    return main_routine
+
+
+def robotInputCalc(main_routine, functions, videoFeed):
+    rob_input = []
+    for ch in main_routine:
+        rob_input.append(ord(ch))
+        rob_input.append(ord(","))
+    rob_input[-1] = ord('\n')
+    functions = [k.split(',') for k in functions]
+    for func in functions:
+        for code in func:
+            for ch in code:
+                rob_input.append(ord(ch))
+            rob_input.append(ord(","))
+        rob_input[-1] = ord('\n')
+    rob_input.append(ord(videoFeed))
+    rob_input.append(ord('\n'))
+    return rob_input
+
 with open('C:/Users/User/Documents/input.txt') as f:
     my_input = list(map(lambda a: int(a), f.read().split(',')))
 f.close()
@@ -163,7 +192,7 @@ f.close()
 my_input = {i: my_input[i] for i in range(0, len(my_input))}
 robot = intcode(my_input.copy(), [])
 while robot.run:
-        robot.output_calc()
+    robot.output_calc()
 
 pic = list(map(lambda line: [char for char in line], ('').join([chr(i) for i in robot.output]).split('\n')))
 part1 = picPrint(pic)
@@ -186,12 +215,15 @@ candidatesCalc(candidates, path_str, path)
 functions = functionsCalc(candidates, path_str)
 functions = {functions[k[0]]: k[1] for k in enumerate(['A', 'B', 'C'])}
 
-main_routine = []
+main_routine = calcMainRoutine(functions, path_str)
 
+rob_input = robotInputCalc(main_routine, functions, "n")
 
 my_input[0] = 2
-robot = intcode(my_input.copy(), [])
+robot = intcode(my_input.copy(), rob_input)
+while robot.run:
+    robot.output_calc()
 
-part2 = 0
+part2 = robot.output[-1]
 
 print(str(part1) + " " + str(part2))
